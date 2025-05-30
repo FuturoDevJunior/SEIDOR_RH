@@ -10,14 +10,6 @@ info:
     ---
     **Desenvolvido por: Gabriel Ferreira**
     **LinkedIn:** [https://linkedin.com/in/devferreirag](https://linkedin.com/in/devferreirag)
-    *(Assistido por Jules AI Agent)*
-  contact:
-    name: Suporte API Controle de Automóveis
-    email: suporte-api@example.com
-    url: https://example.com/support
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
 
 servers:
   - url: http://localhost:3001/api

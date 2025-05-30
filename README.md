@@ -1,10 +1,10 @@
-<!-- Banner/Logo oficial do projeto -->
+<!-- LOGO -->
 <p align="center">
-  <img src="../vec_api_logo.png" alt="Logo do Vehicle Control System API - Carro estilizado com circuitos" width="320"/>
+  <img src="./vec_api_logo.png" alt="Logo do Controle de Automóveis API" width="220"/>
 </p>
 
+<!-- BADGES -->
 <p align="center">
-  <!-- Badges principais -->
   <a href="https://nodejs.org/en"><img src="https://img.shields.io/badge/Node.js-18.x-green?style=for-the-badge&logo=node.js" alt="Node.js"></a>
   <a href="https://www.npmjs.com/"><img src="https://img.shields.io/badge/NPM->=9.x-red?style=for-the-badge&logo=npm" alt="NPM"></a>
   <a href="#testes"><img src="https://img.shields.io/badge/Testes-Jest%20%26%20Supertest-blueviolet?style=for-the-badge&logo=jest" alt="Jest"></a>
@@ -18,205 +18,182 @@
   <a href="https://github.com/devferreirag/Saidor/graphs/contributors"><img src="https://img.shields.io/github/contributors/devferreirag/Saidor?style=for-the-badge" alt="Contribuidores"></a>
 </p>
 
+---
+
+# Controle de Automóveis API
+
+API RESTful moderna, escalável e pronta para produção, focada em excelência de código, experiência do desenvolvedor e robustez de produto.
+
 <p align="center">
-  <b>API RESTful para gestão de automóveis, motoristas e utilizações, com documentação OpenAPI, testes completos, deploy Docker/Render e arquitetura Clean Code/SOLID.</b>
+  <a href="https://seidor-rh.onrender.com" target="_blank"><b>🌐 Teste a demonstração online</b></a>
 </p>
 
 ---
 
-# 📚 Sumário
+## 📑 Sumário
 
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Demonstração e Playground](#demonstração-e-playground)
-- [Principais Features](#principais-features)
+- [Visão Geral](#visão-geral)
+- [Por que este projeto é diferente?](#por-que-este-projeto-é-diferente)
+- [Demonstração Online](#demonstração-online)
+- [Principais Funcionalidades](#principais-funcionalidades)
+- [Arquitetura e Tecnologias](#arquitetura-e-tecnologias)
 - [Instalação e Execução](#instalação-e-execução)
-  - [Requisitos](#requisitos)
-  - [Instalação Local](#instalação-local)
-  - [Execução com Docker](#execução-com-docker)
-  - [Deploy Render](#deploy-render)
-- [Uso Rápido](#uso-rápido)
-- [Estrutura de Pastas](#estrutura-de-pastas)
-- [Documentação da API (Swagger/OpenAPI)](#documentação-da-api-swaggeropenapi)
-- [Exemplos de Requests e Responses](#exemplos-de-requests-e-responses)
+- [Documentação da API](#documentação-da-api)
+- [Exemplos de Uso](#exemplos-de-uso)
 - [Testes e Cobertura](#testes-e-cobertura)
 - [Contribuição](#contribuição)
 - [Roadmap](#roadmap)
-- [Licença](#licenca)
-- [Contato e Agradecimentos](#contato-e-agradecimentos)
+- [Licença](#licença)
+- [Contato e Reconhecimentos](#contato-e-reconhecimentos)
 
 ---
 
-# Sobre o Projeto
+## 🚗 Visão Geral
 
-O **Controle de Automóveis API** é uma solução RESTful para gestão de automóveis, motoristas e utilizações, com persistência em memória, arquitetura modular, documentação OpenAPI 3.0, testes completos (unitários e integração), rate limiting, deploy Docker/Render e princípios Clean Code/SOLID.
-
-- **Stack:** Node.js, Express, Jest, Supertest, Docker, Render, OpenAPI 3.0
-- **Arquitetura:** Modular, Clean Code, SOLID, Middlewares reutilizáveis
-- **Documentação:** Swagger UI (OpenAPI), exemplos reais, README visual
-- **Diferenciais:** Rate limit, validação robusta, deploy automatizado, cobertura de testes, código limpo
+O **Controle de Automóveis API** é uma solução completa para gestão de frotas, motoristas e utilizações, desenhada para ser referência em qualidade, clareza e escalabilidade. O projeto foi desenvolvido com foco em Clean Code, SOLID, testes automatizados e documentação profissional — tudo para garantir facilidade de manutenção, evolução e integração em ambientes reais.
 
 ---
 
-# Demonstração e Playground
+## ✨ Por que este projeto é diferente?
 
-- **Swagger UI:** Após rodar o projeto, acesse: [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
-- **Arquivo OpenAPI:** [openapi.yaml](./openapi.yaml)
-- **Exemplo de endpoint:** `GET /api/automoveis`
+- **Visão de Produto:** Não é só código — é solução! Cada endpoint, validação e regra de negócio foi pensado para resolver problemas reais de gestão de frotas, com foco em usabilidade e segurança.
+- **Qualidade Profissional:** Arquitetura modular, testes completos, documentação OpenAPI e deploy automatizado. Pronto para produção, fácil de escalar e manter.
+- **Experiência do Desenvolvedor:** Onboarding rápido, exemplos claros, código limpo e comentários objetivos. Ideal para times que valorizam produtividade e aprendizado contínuo.
+- **Cultura de Excelência:** O projeto reflete uma mentalidade de melhoria contínua, colaboração e respeito às melhores práticas do mercado.
+- **Pronto para o futuro:** Estrutura preparada para autenticação, integrações externas, webhooks e persistência real — facilitando adaptações para qualquer cenário corporativo.
 
 ---
 
-# Principais Features
+## 🚀 Demonstração Online
 
-| Feature                          | Descrição                                                     |
-| -------------------------------- | --------------------------------------------------------------- |
-| CRUD Automóveis                 | Cadastro, listagem, busca, edição e remoção de automóveis  |
-| CRUD Motoristas                  | Cadastro, listagem, busca, edição e remoção de motoristas   |
+- **Render:** [https://seidor-rh.onrender.com](https://seidor-rh.onrender.com)
+- **Swagger UI:** [https://seidor-rh.onrender.com/api-docs](https://seidor-rh.onrender.com/api-docs)
+
+---
+
+## 🛠️ Principais Funcionalidades
+
+| Feature                       | Descrição                                                  |
+|-------------------------------|------------------------------------------------------------|
+| CRUD Automóveis               | Cadastro, listagem, busca, edição e remoção de automóveis  |
+| CRUD Motoristas               | Cadastro, listagem, busca, edição e remoção de motoristas  |
 | Utilização de Automóveis      | Início/fim de uso, histórico, paginação, regras de negócio |
-| Health Check                     | Endpoint `/health` para monitoramento                         |
-| Rate Limiting                    | Proteção contra abuso de requisições                        |
-| Validação de Dados             | Validação robusta via express-validator                       |
-| Documentação OpenAPI/Swagger   | Especificação completa e playground interativo                |
-| Testes Unitários e Integração | Cobertura total com Jest e Supertest                            |
-| Deploy Docker e Render           | Pronto para produção e cloud                                  |
-| Clean Code & SOLID               | Código limpo, modular, fácil de manter                        |
+| Health Check                  | Endpoint `/health` para monitoramento                      |
+| Rate Limiting                 | Proteção contra abuso de requisições                       |
+| Validação de Dados            | Validação robusta via express-validator                    |
+| Documentação OpenAPI/Swagger  | Especificação completa e playground interativo             |
+| Testes Unitários e Integração | Cobertura total com Jest e Supertest                       |
+| Deploy Docker e Render        | Pronto para produção e cloud                               |
+| Clean Code & SOLID            | Código limpo, modular, fácil de manter                     |
 
 ---
 
-# Instalação e Execução
+## 🏗️ Arquitetura e Tecnologias
 
-## Requisitos
+- **Node.js 18+**
+- **Express.js**
+- **Jest & Supertest** (testes)
+- **Docker** (containerização)
+- **Render** (deploy cloud)
+- **OpenAPI 3.0** (documentação)
+- **Express-validator** (validação)
+- **Arquitetura modular, Clean Code, SOLID**
 
-- Node.js >= 18.x
-- NPM >= 9.x
-- Docker (opcional, para containerização)
-
-## Instalação Local
-
-```bash
-# Clone o repositório
-$ git clone https://github.com/devferreirag/Saidor.git
-$ cd Saidor/controle
-
-# Instale as dependências
-$ npm install
-
-# (Opcional) Copie e ajuste variáveis de ambiente
-$ cp .env.example .env
-```
-
-## Execução Local
-
-```bash
-# Ambiente de desenvolvimento (com nodemon)
-$ npm run dev
-
-# Ambiente de produção
-$ npm start
-```
-
-## Execução com Docker
-
-```bash
-# Build da imagem
-$ docker build -t controle-automoveis-api .
-
-# Run container (porta 3000 ou definida no .env)
-$ docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
-```
-
-## Deploy Render
-
-- O projeto inclui [render.yaml](./render.yaml) para deploy automatizado na plataforma [Render](https://render.com/).
-- Basta conectar o repositório, criar um Blueprint Service e seguir as instruções do Render.
-
----
-
-# Uso Rápido
-
-Exemplo de requisição para criar um automóvel:
-
-```bash
-curl -X POST http://localhost:3000/api/automoveis \
-  -H 'Content-Type: application/json' \
-  -d '{"placa": "ABC-1234", "cor": "Azul", "marca": "MarcaXYZ"}'
-```
-
-Exemplo de resposta:
-
-```json
-{
-  "id": "gerado-pelo-uuid",
-  "placa": "ABC-1234",
-  "cor": "Azul",
-  "marca": "MarcaXYZ"
-}
-```
-
----
-
-# Estrutura de Pastas
+### Estrutura de Pastas
 
 ```
 controle/
 ├── src/
 │   ├── api/
-│   │   ├── automoveis/       # CRUD Automóveis
-│   │   ├── health/           # Health Check
-│   │   ├── motoristas/       # CRUD Motoristas
-│   │   └── utilizacoes/      # Utilizações
-│   ├── middlewares/          # Middlewares (validação, logger, error handler, swagger)
-│   ├── utils/                # Utilitários (AppError, idGenerator)
-│   ├── app.js                # Configuração principal do Express
-│   └── server.js             # Inicialização do servidor
+│   │   ├── automoveis/
+│   │   ├── health/
+│   │   ├── motoristas/
+│   │   └── utilizacoes/
+│   ├── middlewares/
+│   ├── utils/
+│   ├── app.js
+│   └── server.js
 ├── tests/
-│   ├── unit/                 # Testes unitários
-│   └── integration/          # Testes de integração
-├── openapi.yaml              # Especificação OpenAPI 3.0
-├── render.yaml               # Deploy Render
-├── Dockerfile                # Docker
+│   ├── unit/
+│   └── integration/
+├── openapi.yaml
+├── render.yaml
+├── Dockerfile
 ├── package.json, .env, etc.
 ```
 
 ---
 
-# Documentação da API (Swagger/OpenAPI)
+## ⚡ Instalação e Execução
 
-- **Swagger UI:** [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
-- **Arquivo OpenAPI:** [openapi.yaml](./openapi.yaml)
-- **Principais endpoints:**
-  - `GET /health` — Health check
-  - `POST /api/automoveis` — Criar automóvel
-  - `GET /api/automoveis` — Listar automóveis
-  - `GET /api/automoveis/:id` — Buscar automóvel
-  - `PUT /api/automoveis/:id` — Atualizar automóvel
-  - `DELETE /api/automoveis/:id` — Remover automóvel
-  - `POST /api/motoristas` — Criar motorista
-  - `GET /api/motoristas` — Listar motoristas
-  - `GET /api/motoristas/:id` — Buscar motorista
-  - `PUT /api/motoristas/:id` — Atualizar motorista
-  - `DELETE /api/motoristas/:id` — Remover motorista
-  - `POST /api/utilizacoes` — Iniciar utilização
-  - `PATCH /api/utilizacoes/:id/finalizar` — Finalizar utilização
-  - `GET /api/utilizacoes` — Listar utilizações (paginação)
+### Pré-requisitos
+
+- Node.js >= 18.x
+- NPM >= 9.x
+- Docker (opcional)
+
+### Instalação Local
+
+```bash
+git clone https://github.com/devferreirag/Saidor.git
+cd Saidor/controle
+npm install
+cp .env.example .env # Ajuste as variáveis se necessário
+```
+
+### Execução
+
+- **Desenvolvimento:**  
+  `npm run dev`
+- **Produção:**  
+  `npm start`
+
+### Docker
+
+```bash
+docker build -t controle-automoveis-api .
+docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
+```
 
 ---
 
-# Exemplos de Requests e Responses
+## 📖 Documentação da API
 
-## Criar Automóvel
+- **Swagger UI:**  
+  [https://seidor-rh.onrender.com/api-docs](https://seidor-rh.onrender.com/api-docs)
+- **Arquivo OpenAPI:**  
+  [`openapi.yaml`](./openapi.yaml)
 
-```http
-POST /api/automoveis
-Content-Type: application/json
-{
-  "placa": "ABC-1234",
-  "cor": "Azul",
-  "marca": "MarcaXYZ"
-}
+### Endpoints Principais
+
+- `GET /health` — Health check
+- `POST /api/automoveis` — Criar automóvel
+- `GET /api/automoveis` — Listar automóveis
+- `GET /api/automoveis/:id` — Buscar automóvel
+- `PUT /api/automoveis/:id` — Atualizar automóvel
+- `DELETE /api/automoveis/:id` — Remover automóvel
+- `POST /api/motoristas` — Criar motorista
+- `GET /api/motoristas` — Listar motoristas
+- `GET /api/motoristas/:id` — Buscar motorista
+- `PUT /api/motoristas/:id` — Atualizar motorista
+- `DELETE /api/motoristas/:id` — Remover motorista
+- `POST /api/utilizacoes` — Iniciar utilização
+- `PATCH /api/utilizacoes/:id/finalizar` — Finalizar utilização
+- `GET /api/utilizacoes` — Listar utilizações (paginação)
+
+---
+
+## 🧑‍💻 Exemplos de Uso
+
+### Criar Automóvel
+
+```bash
+curl -X POST https://seidor-rh.onrender.com/api/automoveis \
+  -H 'Content-Type: application/json' \
+  -d '{"placa": "ABC-1234", "cor": "Azul", "marca": "MarcaXYZ"}'
 ```
 
-Resposta:
-
+**Resposta:**
 ```json
 {
   "id": "gerado-pelo-uuid",
@@ -226,14 +203,13 @@ Resposta:
 }
 ```
 
-## Listar Utilizações (com paginação)
+### Listar Utilizações (com paginação)
 
-```http
-GET /api/utilizacoes?page=1&limit=10
+```bash
+curl "https://seidor-rh.onrender.com/api/utilizacoes?page=1&limit=10"
 ```
 
-Resposta:
-
+**Resposta:**
 ```json
 {
   "items": [
@@ -257,20 +233,21 @@ Resposta:
 
 ---
 
-# Testes e Cobertura
+## 🧪 Testes e Cobertura
 
-- **Testes unitários e integração:** `npm test`
-- **Cobertura de testes:** `npm run coverage` (relatório em `coverage/lcov-report/index.html`)
+- **Testes unitários e integração:**  
+  `npm test`
+- **Cobertura de testes:**  
+  `npm run coverage` (relatório em `coverage/lcov-report/index.html`)
 - **Frameworks:** Jest, Supertest
-- **Pastas de testes:**
-  - `tests/unit/` — Testes unitários por feature
-  - `tests/integration/` — Testes de integração por endpoint
 
 ---
 
-# Contribuição
+## 🤝 Contribuição
 
-Contribuições são bem-vindas! Siga os passos:
+Acredita em colaboração, aprendizado contínuo e código aberto?  
+Sinta-se à vontade para contribuir!  
+Siga os passos:
 
 1. Fork este repositório
 2. Crie uma branch: `git checkout -b feature/NovaFeature`
@@ -282,35 +259,36 @@ Consulte o [CONTRIBUTING.md](./CONTRIBUTING.md) para mais detalhes.
 
 ---
 
-# Roadmap
+## 🗺️ Roadmap
 
-- [X] CRUD Automóveis
-- [X] CRUD Motoristas
-- [X] Utilização de Automóveis
-- [X] Health Check
-- [X] Rate Limiting
-- [X] Documentação OpenAPI/Swagger
-- [X] Testes unitários e integração
-- [X] Deploy Docker e Render
+- [x] CRUD Automóveis
+- [x] CRUD Motoristas
+- [x] Utilização de Automóveis
+- [x] Health Check
+- [x] Rate Limiting
+- [x] Documentação OpenAPI/Swagger
+- [x] Testes unitários e integração
+- [x] Deploy Docker e Render
 - [ ] Autenticação JWT (futuro)
 - [ ] Integração com banco de dados persistente (futuro)
 - [ ] Webhooks e eventos (futuro)
 
 ---
 
-# Licença
+## 📄 Licença
 
-Distribuído sob a licença ISC. Veja o campo "license" do [package.json](./package.json) para mais informações.
+Distribuído sob a licença ISC.  
+Veja o campo "license" do [`package.json`](./package.json) para mais informações.
 
 ---
 
-# Contato e Agradecimentos
+## 👤 Contato e Reconhecimentos
 
-Desenvolvido por [Gabriel Ferreira](https://linkedin.com/in/devferreirag) — contato via LinkedIn.
-
+Desenvolvido por [Gabriel Ferreira](https://linkedin.com/in/devferreirag)  
 Agradecimentos especiais a todos os contribuidores, à comunidade Node.js e aos mantenedores de ferramentas open source!
 
 <p align="center">
-  <em>Este projeto segue as melhores práticas de Clean Code, SOLID e documentação profissional. Powered </em>
+  <em>Este projeto é resultado de paixão por tecnologia, atenção a detalhes e compromisso com excelência. Se você busca alguém com visão de produto, foco em qualidade e espírito colaborativo, vamos conversar!</em>
+  <br>
+  <em>Powered by DevFerreiraG</em>
 </p>
-# SEIDOR_RH
