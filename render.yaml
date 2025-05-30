@@ -1,0 +1,42 @@
+# Blueprint YAML para deploy no Render
+# Referência: https://render.com/docs/blueprint-yaml-reference
+
+services:
+  - name: controle-automoveis-api
+    type: web # Tipo de serviço: web service
+    runtime: docker # Usaremos o Dockerfile que já criamos
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free # Plano gratuito para este exemplo (pode ser alterado para 'starter', etc.)
+    region: frankfurt # Região de deploy (alternativas: oregon, ohio, virginia, singapore)
+    
+    # Configuração do Health Check que implementamos
+    healthCheckPath: /health 
+    
+    # Variáveis de ambiente específicas para este serviço
+    # O Render injeta automaticamente a variável PORT.
+    # Outras variáveis podem ser definidas aqui ou via Environment Groups.
+    envVars:
+      - key: NODE_ENV
+        value: production # Garante que o Node rode em modo de produção
+      # Exemplo: Se precisássemos de um fuso horário específico:
+      # - key: TZ
+      #   value: America/Sao_Paulo
+
+    # Configuração para auto-deploy a partir do Git (opcional, mas comum)
+    # autoDeployTrigger: commit # Dispara deploy a cada commit na branch principal
+                               # Outras opções: checksPass, off
+
+    # Configuração de número de instâncias (para planos pagos)
+    # numInstances: 1 # Para o plano 'free', é sempre 1.
+
+# Configuração de Ambientes de Preview (para Pull Requests)
+previews:
+  generation: automatic # Gera previews automaticamente para PRs (alternativa: manual, off)
+  expireAfterDays: 7    # Remove o ambiente de preview após 7 dias sem atualizações
+
+# Não temos bancos de dados PostgreSQL ou Redis gerenciados pelo Render neste projeto,
+# então as seções 'databases' e serviços do tipo 'keyvalue'/'redis' são omitidas.
+
+# Não temos grupos de variáveis de ambiente complexos neste projeto,
+# então a seção 'envVarGroups' é omitida.

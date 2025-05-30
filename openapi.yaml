@@ -1,0 +1,905 @@
+openapi: 3.0.0
+info:
+  title: API de Controle de Automóveis
+  version: '1.0.0'
+  description: |
+    API RESTful para gerenciamento de automóveis, motoristas e registros de utilização de veículos.
+    Permite operações CRUD para cada entidade, listagens com filtros e paginação, e regras de negócio para a utilização de veículos.
+    A persistência de dados é em memória para esta versão.
+
+    ---
+    **Desenvolvido por: Gabriel Ferreira**
+    **LinkedIn:** [https://linkedin.com/in/devferreirag](https://linkedin.com/in/devferreirag)
+    *(Assistido por Jules AI Agent)*
+  contact:
+    name: Suporte API Controle de Automóveis
+    email: suporte-api@example.com
+    url: https://example.com/support
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3001/api
+    description: Servidor de Desenvolvimento Local (porta do .env)
+  - url: https://sua-url-de-producao.com/api
+    description: Servidor de Produção (exemplo)
+  - url: /api 
+    description: Path relativo (para uso em ambientes onde o host base é implícito)
+
+tags:
+  - name: Health
+    description: Verificação de saúde e operacionalidade da API.
+  - name: Automoveis
+    description: Operações para gerenciamento do cadastro de automóveis.
+  - name: Motoristas
+    description: Operações para gerenciamento do cadastro de motoristas.
+  - name: Utilizacoes
+    description: Operações para registrar e gerenciar a utilização de automóveis por motoristas.
+
+security:
+  - BearerAuth: [] # Aplica BearerAuth globalmente de forma demonstrativa. Endpoints públicos podem sobrescrever com security: [].
+
+paths:
+  # === HEALTH CHECK ===
+  /health: # Este endpoint está fora do prefixo /api dos servers, acessado como /health
+    get:
+      tags:
+        - Health
+      summary: Verifica a saúde da aplicação.
+      description: Retorna o status operacional da API, um timestamp e uma mensagem. Este endpoint é público e não requer autenticação.
+      security: [] # Marca este endpoint como público, sobrescrevendo o default global.
+      responses:
+        '200':
+          description: Aplicação está operacional e respondendo.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: Indica o status da aplicação.
+                    example: UP
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Timestamp da verificação.
+                    example: '2024-07-31T10:20:30.000Z'
+                  message:
+                    type: string
+                    description: Mensagem informativa sobre o status.
+                    example: Aplicação está operacional.
+        '503': # Service Unavailable (exemplo de erro para health)
+          description: Serviço temporariamente indisponível ou com problemas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorResponse'
+              example:
+                status: 'DOWN'
+                message: 'Serviço indisponível devido a manutenção.'
+
+  # === AUTOMOVEIS ===
+  /automoveis:
+    get:
+      tags:
+        - Automoveis
+      summary: Lista todos os automóveis cadastrados.
+      description: Retorna uma lista de automóveis, com opção de filtragem por cor e/ou marca. A busca por cor e marca é case-insensitive.
+      parameters:
+        - $ref: '#/components/parameters/CorQueryParam'
+        - $ref: '#/components/parameters/MarcaQueryParam'
+      responses:
+        '200':
+          description: Lista de automóveis recuperada com sucesso. Pode retornar uma lista vazia se não houver automóveis correspondentes aos filtros.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Automovel'
+              example:
+                - id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                  placa: "BRA2E19"
+                  cor: "Prata"
+                  marca: "Chevrolet"
+                - id: "b2c3d4e5-f6a7-8901-2345-67890abcde0"
+                  placa: "MER1C0S"
+                  cor: "Preto"
+                  marca: "Volkswagen"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
+    post:
+      tags:
+        - Automoveis
+      summary: Cria um novo registro de automóvel.
+      description: Adiciona um novo automóvel ao sistema com os dados fornecidos.
+      requestBody:
+        description: Dados do automóvel para criação.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutomovelInput'
+            example:
+              placa: "XYZ-7890"
+              cor: "Branco"
+              marca: "Fiat"
+      responses:
+        '201':
+          description: Automóvel criado com sucesso. Retorna o automóvel recém-criado, incluindo seu ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Automovel'
+              example:
+                id: "c3d4e5f6-a7b8-9012-3456-7890abcdef1"
+                placa: "XYZ-7890"
+                cor: "Branco"
+                marca: "Fiat"
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /automoveis/{id}:
+    get:
+      tags:
+        - Automoveis
+      summary: Busca um automóvel específico pelo seu ID.
+      description: Retorna os detalhes de um automóvel com base no ID fornecido (UUID).
+      parameters:
+        - $ref: '#/components/parameters/AutomovelIdPathParam'
+      responses:
+        '200':
+          description: Automóvel encontrado e retornado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Automovel'
+              example:
+                id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                placa: "BRA2E19"
+                cor: "Prata"
+                marca: "Chevrolet"
+        '400': 
+          $ref: '#/components/responses/ValidationErrorsResponse' 
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - Automoveis
+      summary: Atualiza um automóvel existente pelo ID.
+      description: Modifica os dados de um automóvel já cadastrado, identificado pelo seu ID.
+      parameters:
+        - $ref: '#/components/parameters/AutomovelIdPathParam'
+      requestBody:
+        description: Dados do automóvel para atualização. Todos os campos são obrigatórios.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutomovelInput'
+            example:
+              placa: "NEW-PLATE"
+              cor: "Preto Fosco"
+              marca: "Tesla"
+      responses:
+        '200':
+          description: Automóvel atualizado com sucesso. Retorna o automóvel com os dados modificados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Automovel'
+              example:
+                id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                placa: "NEW-PLATE"
+                cor: "Preto Fosco"
+                marca: "Tesla"
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Automoveis
+      summary: Deleta um automóvel pelo ID.
+      description: Remove permanentemente o registro de um automóvel do sistema.
+      parameters:
+        - $ref: '#/components/parameters/AutomovelIdPathParam'
+      responses:
+        '204':
+          description: Automóvel deletado com sucesso. Nenhuma resposta no corpo.
+        '400': 
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # === MOTORISTAS ===
+  /motoristas:
+    get:
+      tags:
+        - Motoristas
+      summary: Lista todos os motoristas cadastrados.
+      description: Retorna uma lista de motoristas, com opção de filtragem por nome (case-insensitive, partial match).
+      parameters:
+        - $ref: '#/components/parameters/NomeMotoristaQueryParam'
+      responses:
+        '200':
+          description: Lista de motoristas recuperada com sucesso.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Motorista'
+              example:
+                - id: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                  nome: "Carlos Sainz"
+                - id: "d4e5f6a7-b8c9-0123-4567-890abcdef012"
+                  nome: "Lando Norris"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Motoristas
+      summary: Cria um novo registro de motorista.
+      description: Adiciona um novo motorista ao sistema.
+      requestBody:
+        description: Dados do motorista para criação.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotoristaInput'
+            example:
+              nome: "Charles Leclerc"
+      responses:
+        '201':
+          description: Motorista criado com sucesso. Retorna o motorista recém-criado, incluindo seu ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+              example:
+                id: "e5f6a7b8-c9d0-1234-5678-90abcdef0123"
+                nome: "Charles Leclerc"
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /motoristas/{id}:
+    get:
+      tags:
+        - Motoristas
+      summary: Busca um motorista específico pelo seu ID.
+      description: Retorna os detalhes de um motorista com base no ID fornecido (UUID).
+      parameters:
+        - $ref: '#/components/parameters/MotoristaIdPathParam'
+      responses:
+        '200':
+          description: Motorista encontrado e retornado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+              example:
+                id: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                nome: "Carlos Sainz"
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    put:
+      tags:
+        - Motoristas
+      summary: Atualiza um motorista existente pelo ID.
+      description: Modifica o nome de um motorista já cadastrado.
+      parameters:
+        - $ref: '#/components/parameters/MotoristaIdPathParam'
+      requestBody:
+        description: Dados do motorista para atualização.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotoristaInput'
+            example:
+              nome: "Carlos Sainz Jr."
+      responses:
+        '200':
+          description: Motorista atualizado com sucesso. Retorna o motorista com os dados modificados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Motorista'
+              example:
+                id: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                nome: "Carlos Sainz Jr."
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Motoristas
+      summary: Deleta um motorista pelo ID.
+      description: Remove permanentemente o registro de um motorista do sistema.
+      parameters:
+        - $ref: '#/components/parameters/MotoristaIdPathParam'
+      responses:
+        '204':
+          description: Motorista deletado com sucesso. Nenhuma resposta no corpo.
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # === UTILIZACOES ===
+  /utilizacoes:
+    get:
+      tags:
+        - Utilizacoes
+      summary: Lista todos os registros de utilização de automóveis.
+      description: Retorna uma lista paginada de todos os registros de utilização, incluindo detalhes do motorista e do automóvel associados.
+      parameters:
+        - $ref: '#/components/parameters/PageQueryParam'
+        - $ref: '#/components/parameters/LimitQueryParam'
+      responses:
+        '200':
+          description: Lista de utilizações recuperada com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UtilizacaoPaginadaResponse'
+              example:
+                items:
+                  - id: "c3d4e5f6-a7b8-9012-3456-7890abcdef01"
+                    motoristaId: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                    automovelId: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                    dataInicio: "2024-07-30T08:00:00.000Z"
+                    dataFim: "2024-07-30T17:30:00.000Z"
+                    motivoUtilizacao: "Visita a cliente regional."
+                    motorista:
+                      id: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                      nome: "Carlos Sainz"
+                    automovel:
+                      id: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                      placa: "BRA2E19"
+                      cor: "Prata"
+                      marca: "Chevrolet"
+                totalItems: 1
+                totalPages: 1
+                currentPage: 1
+                itemsPerPage: 10
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Utilizacoes
+      summary: Inicia uma nova utilização de automóvel.
+      description: Registra o início da utilização de um automóvel por um motorista, verificando a disponibilidade de ambos.
+      requestBody:
+        description: Dados necessários para iniciar a utilização.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UtilizacaoInput'
+            example:
+              motoristaId: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+              automovelId: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+              motivoUtilizacao: "Transporte de material para filial."
+      responses:
+        '201':
+          description: Utilização iniciada com sucesso. Retorna o registro da nova utilização.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilizacao' # Retorna a utilização completa, sem os detalhes populados de motorista/automovel
+              example:
+                id: "f6a7b8c9-d0e1-2345-6789-0abcdef01234"
+                motoristaId: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                automovelId: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                dataInicio: "2024-07-31T14:00:00.000Z"
+                dataFim: null
+                motivoUtilizacao: "Transporte de material para filial."
+        '400':
+          $ref: '#/components/responses/ValidationErrorsResponse'
+        '404': # Motorista ou Automóvel não encontrado
+          $ref: '#/components/responses/NotFoundResponse' 
+        '409': # Conflict (Automóvel ou Motorista já em utilização)
+          description: Conflito ao tentar iniciar a utilização. O automóvel pode já estar em uso ou o motorista pode já estar utilizando outro veículo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorResponse'
+              examples:
+                automovelEmUso:
+                  value:
+                    status: "fail"
+                    message: "Automóvel já em utilização"
+                motoristaEmUso:
+                  value:
+                    status: "fail"
+                    message: "Motorista já utilizando outro automóvel"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /utilizacoes/{id}/finalizar:
+    patch:
+      tags:
+        - Utilizacoes
+      summary: Finaliza uma utilização de automóvel ativa.
+      description: Registra a data e hora de término para um registro de utilização de automóvel existente e ativo.
+      parameters:
+        - $ref: '#/components/parameters/UtilizacaoIdPathParam'
+      responses:
+        '200':
+          description: Utilização finalizada com sucesso. Retorna o registro da utilização atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Utilizacao' # Retorna a utilização completa, sem os detalhes populados de motorista/automovel
+              example:
+                id: "f6a7b8c9-d0e1-2345-6789-0abcdef01234"
+                motoristaId: "b2c3d4e5-f6a7-8901-2345-67890abcdef0"
+                automovelId: "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+                dataInicio: "2024-07-31T14:00:00.000Z"
+                dataFim: "2024-07-31T15:30:00.000Z"
+                motivoUtilizacao: "Transporte de material para filial."
+        '400': # ID inválido ou Utilização já finalizada
+          description: Requisição inválida. Pode ser um ID mal formatado ou a utilização já foi finalizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppErrorResponse' # Pode ser também ValidationErrorsResponse se o ID for mal formatado
+              examples:
+                jaFinalizada:
+                  value:
+                    status: "fail"
+                    message: "Utilização já finalizada"
+                idInvalido: # Se o erro de validação de UUID fosse tratado pelo AppError e não ValidationErrorsResponse
+                  value:
+                    status: "fail"
+                    message: "ID da utilização deve ser um UUID válido" 
+        '404':
+          $ref: '#/components/responses/NotFoundResponse' 
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    # === AUTOMOVEL SCHEMAS ===
+    AutomovelBase:
+      type: object
+      description: Estrutura base para dados de um automóvel.
+      properties:
+        placa:
+          type: string
+          description: Placa do automóvel (padrão Mercosul ou antigo).
+          example: BRA2E19
+          pattern: '^[A-Z]{3}-?[0-9][A-Z0-9][0-9]{2}$' # Padrão Mercosul ou antigo (simplificado)
+          minLength: 7
+          maxLength: 8
+        cor:
+          type: string
+          description: Cor predominante do automóvel.
+          example: Prata
+          minLength: 2
+          maxLength: 50
+        marca:
+          type: string
+          description: Marca (fabricante) do automóvel.
+          example: Chevrolet
+          minLength: 2
+          maxLength: 50
+    AutomovelInput:
+      type: object
+      description: Dados necessários para criar ou atualizar um automóvel.
+      allOf:
+        - $ref: '#/components/schemas/AutomovelBase'
+      required:
+        - placa
+        - cor
+        - marca
+    Automovel:
+      type: object
+      description: Representação completa de um automóvel, incluindo seu ID.
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Identificador único do automóvel (UUID).
+              example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef'
+              readOnly: true # ID é gerado pelo sistema e não pode ser alterado via input
+        - $ref: '#/components/schemas/AutomovelBase'
+
+    # === MOTORISTA SCHEMAS ===
+    MotoristaBase:
+      type: object
+      description: Estrutura base para dados de um motorista.
+      properties:
+        nome:
+          type: string
+          description: Nome completo do motorista.
+          example: João Carlos da Silva
+          minLength: 3
+          maxLength: 100
+    MotoristaInput:
+      type: object
+      description: Dados necessários para criar ou atualizar um motorista.
+      allOf:
+        - $ref: '#/components/schemas/MotoristaBase'
+      required:
+        - nome
+    Motorista:
+      type: object
+      description: Representação completa de um motorista, incluindo seu ID.
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Identificador único do motorista (UUID).
+              example: 'b2c3d4e5-f6a7-8901-2345-67890abcdef0'
+              readOnly: true
+        - $ref: '#/components/schemas/MotoristaBase'
+
+    # === UTILIZACAO SCHEMAS ===
+    UtilizacaoBase:
+      type: object
+      description: Estrutura base para dados de um registro de utilização.
+      properties:
+        motoristaId:
+          type: string
+          format: uuid
+          description: ID do motorista que está utilizando o automóvel.
+          example: 'b2c3d4e5-f6a7-8901-2345-67890abcdef0'
+        automovelId:
+          type: string
+          format: uuid
+          description: ID do automóvel que está sendo utilizado.
+          example: 'a1b2c3d4-e5f6-7890-1234-567890abcdef'
+        motivoUtilizacao:
+          type: string
+          description: Justificativa ou motivo para a utilização do automóvel.
+          example: Viagem para reunião com cliente regional.
+          minLength: 5
+          maxLength: 200
+    UtilizacaoInput:
+      type: object
+      description: Dados necessários para iniciar um novo registro de utilização.
+      allOf:
+        - $ref: '#/components/schemas/UtilizacaoBase'
+      required:
+        - motoristaId
+        - automovelId
+        - motivoUtilizacao
+    Utilizacao:
+      type: object
+      description: Representação completa de um registro de utilização, incluindo IDs e timestamps.
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Identificador único do registro de utilização (UUID).
+              example: 'c3d4e5f6-a7b8-9012-3456-7890abcdef01'
+              readOnly: true
+            dataInicio:
+              type: string
+              format: date-time
+              description: Data e hora de início da utilização. Gerado pelo sistema.
+              example: '2024-07-29T10:00:00.000Z'
+              readOnly: true
+            dataFim:
+              type: string
+              format: date-time
+              nullable: true
+              description: Data e hora de término da utilização. Preenchido ao finalizar a utilização.
+              example: '2024-07-29T18:30:00.000Z'
+        - $ref: '#/components/schemas/UtilizacaoBase'
+        
+    UtilizacaoDetalhada: 
+      type: object
+      description: Representação de um registro de utilização com detalhes populados do motorista e do automóvel.
+      allOf:
+        - $ref: '#/components/schemas/Utilizacao'
+        - type: object
+          properties:
+            motorista: 
+              $ref: '#/components/schemas/Motorista' # Retorna o motorista completo
+              description: Detalhes do motorista associado. Nulo se o motorista foi deletado.
+            automovel: 
+              $ref: '#/components/schemas/Automovel' # Retorna o automóvel completo
+              description: Detalhes do automóvel associado. Nulo se o automóvel foi deletado.
+              
+    UtilizacaoPaginadaResponse:
+      type: object
+      description: Estrutura de resposta para listagem paginada de utilizações.
+      properties:
+        items:
+          type: array
+          description: Lista dos registros de utilização para a página atual.
+          items:
+            $ref: '#/components/schemas/UtilizacaoDetalhada'
+        totalItems:
+          type: integer
+          description: Número total de registros de utilização disponíveis.
+          example: 25
+        totalPages:
+          type: integer
+          description: Número total de páginas disponíveis.
+          example: 3
+        currentPage:
+          type: integer
+          description: O número da página atual retornada.
+          example: 1
+        itemsPerPage:
+          type: integer
+          description: O número de itens por página.
+          example: 10
+
+    # === ERRO SCHEMAS ===
+    AppErrorResponse:
+      type: object
+      description: Estrutura genérica para respostas de erro da aplicação.
+      properties:
+        status:
+          type: string
+          description: Indica o status da resposta de erro (e.g., 'fail' para erros do cliente, 'error' para erros do servidor).
+          example: fail 
+        message:
+          type: string
+          description: Mensagem descritiva do erro.
+          example: Automóvel não encontrado.
+          
+    ValidationErrorsResponse:
+      type: object
+      description: Estrutura para erros de validação de entrada, conforme retornado pelo express-validator.
+      properties:
+        errors:
+          type: array
+          description: Lista de erros de validação.
+          items:
+            type: object
+            properties:
+              type: # Adicionado para express-validator v7+
+                type: string
+                example: field
+                description: Tipo de erro (geralmente 'field').
+              value:
+                description: O valor que causou o erro de validação.
+                example: ''
+                # type pode variar (string, number, etc.) ou ser omitido se misto
+              msg:
+                type: string
+                description: A mensagem de erro de validação.
+                example: 'Placa is required'
+              path: # Adicionado para express-validator v7+ (substitui 'param')
+                type: string
+                description: O nome do campo que falhou na validação.
+                example: 'placa'
+              location:
+                type: string
+                description: Onde o campo foi encontrado (e.g., body, query, params).
+                example: 'body'
+
+  parameters:
+    AutomovelIdPathParam:
+      name: id
+      in: path
+      required: true
+      description: Identificador único (UUID) do automóvel.
+      schema:
+        type: string
+        format: uuid
+        example: 'd290f1ee-6c54-4b01-90e6-d701748f0851'
+    MotoristaIdPathParam:
+      name: id
+      in: path
+      required: true
+      description: Identificador único (UUID) do motorista.
+      schema:
+        type: string
+        format: uuid
+        example: '3ba8760c-a946-460e-9009-c18923977adc'
+    UtilizacaoIdPathParam:
+      name: id
+      in: path
+      required: true
+      description: Identificador único (UUID) do registro de utilização.
+      schema:
+        type: string
+        format: uuid
+        example: '91e9a7e8-9b28-4b63-a809-f9500d9a057a'
+    CorQueryParam:
+      name: cor
+      in: query
+      description: Filtra automóveis pela cor (case-insensitive).
+      required: false
+      schema:
+        type: string
+        example: "Azul"
+    MarcaQueryParam:
+      name: marca
+      in: query
+      description: Filtra automóveis pela marca (case-insensitive).
+      required: false
+      schema:
+        type: string
+        example: "Toyota"
+    NomeMotoristaQueryParam:
+      name: nome
+      in: query
+      description: Filtra motoristas pelo nome (case-insensitive, partial match).
+      required: false
+      schema:
+        type: string
+        example: "Silva"
+    PageQueryParam:
+      name: page
+      in: query
+      description: Número da página para resultados paginados.
+      required: false
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+        example: 1
+    LimitQueryParam:
+      name: limit
+      in: query
+      description: Número de itens por página para resultados paginados.
+      required: false
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+        maximum: 100 # Exemplo de limite máximo
+        example: 10
+
+  responses:
+    NotFoundResponse:
+      description: O recurso solicitado não foi encontrado.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppErrorResponse'
+          examples:
+            automovelNaoEncontrado:
+              value:
+                status: 'fail'
+                message: 'Automóvel não encontrado'
+            motoristaNaoEncontrado:
+              value:
+                status: 'fail'
+                message: 'Motorista não encontrado'
+            utilizacaoNaoEncontrada:
+              value:
+                status: 'fail'
+                message: 'Registro de utilização não encontrado'
+            
+    ValidationErrorsResponse:
+      description: Erro de validação nos dados de entrada. A resposta contém um array de erros detalhados.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorsResponse'
+          example:
+            errors:
+              - type: "field"
+                value: ""
+                msg: "Placa is required"
+                path: "placa"
+                location: "body"
+              - type: "field"
+                value: "XYZ" # Exemplo de valor inválido para UUID
+                msg: "ID do automóvel deve ser um UUID válido"
+                path: "id"
+                location: "params"
+            
+    TooManyRequests:
+      description: Muitas requisições foram enviadas em um curto período. Limite de taxa excedido.
+      content:
+        # express-rate-limit por padrão retorna Content-Type: text/html para a mensagem, 
+        # ou application/json se a request original pedia JSON e json: true está na config do handler de erro do rate-limit
+        # Para simplificar e consistência, vamos assumir que pode ser JSON, ou a string direta
+        application/json: # Ou text/plain
+          schema:
+            # $ref: '#/components/schemas/AppErrorResponse' # Se você customizar o handler do rate-limit
+            type: object # Para a mensagem padrão do express-rate-limit, pode ser apenas string, mas AppError é mais consistente
+            properties:
+                status: 
+                    type: string
+                    example: "error"
+                message:
+                    type: string
+                    example: Muitas requisições originadas deste IP, por favor, tente novamente após 15 minutos.
+          example:
+            status: "error" # Ou "fail" dependendo do seu handler
+            message: Muitas requisições originadas deste IP, por favor, tente novamente após 15 minutos.
+      headers:
+        RateLimit-Limit:
+          description: O número total de requisições permitidas na janela atual.
+          schema:
+            type: integer
+            example: 100
+        RateLimit-Remaining:
+          description: O número de requisições restantes na janela atual.
+          schema:
+            type: integer
+            example: 99
+        RateLimit-Reset:
+          description: O tempo restante em segundos até a janela de rate limit ser resetada.
+          schema:
+            type: integer 
+            example: 899 # Para uma janela de 15 minutos
+        Retry-After: # Adicionado pelo standardHeaders: 'draft-7' (true)
+            description: O tempo em segundos para aguardar antes de fazer outra requisição.
+            schema:
+                type: integer
+                example: 899
+          
+    ServerError:
+      description: Erro interno inesperado no servidor.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AppErrorResponse'
+          example:
+            status: 'error'
+            message: 'Ocorreu um erro inesperado no servidor.' # Mensagem mais genérica
+
+securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT # Opcional, mas bom para documentar
+    description: "Token JWT para autenticação. Envie o token no header 'Authorization' com o prefixo 'Bearer '. Exemplo: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

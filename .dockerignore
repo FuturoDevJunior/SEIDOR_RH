@@ -1,0 +1,36 @@
+# Arquivos e pastas do Git
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+pids
+*.pid
+*.seed
+*.log
+*.log.[0-9]*
+logs
+*.svg
+
+# Ambiente local e IDE
+.env
+.env.test
+.env.production
+.env.development
+.DS_Store
+.vscode/
+.idea/
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Outros
+README.md # Opcional, pode ser útil dentro da imagem para referência, mas geralmente não é necessário para a execução
+openapi.yaml # Similar ao README.md, geralmente não necessário para a execução da imagem
+coverage/
