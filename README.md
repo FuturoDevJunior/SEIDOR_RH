@@ -144,8 +144,6 @@ controle/
 ├── package.json, .env, etc.
 ```
 
-> **Sugestão:** Adicione um diagrama de arquitetura para ilustrar o fluxo do sistema. Pode ser um link para um arquivo .png/.svg ou ferramenta online (Excalidraw, Lucidchart, etc).
-
 ---
 
 ## ⚡ Instalação
