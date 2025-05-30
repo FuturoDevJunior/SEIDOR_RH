@@ -48,7 +48,7 @@ O alt text é descritivo para acessibilidade.
 API RESTful para gestão de frotas, motoristas e utilizações. Arquitetura escalável, testes automatizados, documentação OpenAPI e pronta para produção. Foco em facilidade de manutenção, evolução e integração real.
 
 <p align="center">
-  <a href="https://seidor-rh.onrender.com" target="_blank"><b>🌐 Teste a demonstração online</b></a>
+  <a href="https://seidor-rh.onrender.com" target="_blank" style="font-size:1.2em;"><b>🌐 Teste a demonstração online</b></a>
 </p>
 
 ---
@@ -63,6 +63,7 @@ API RESTful para gestão de frotas, motoristas e utilizações. Arquitetura esca
 - [Instalação](#instalação)
 - [Testes & Cobertura](#testes--cobertura)
 - [Documentação](#documentação)
+- [Exemplos de Uso](#exemplos-de-uso)
 - [Contribuição](#contribuição)
 - [Roadmap](#roadmap)
 - [Licença](#licença)
@@ -96,16 +97,16 @@ O **Vehicle Control System API** é uma solução robusta para gestão de frotas
 
 | Feature                       | Descrição                                                  |
 |-------------------------------|------------------------------------------------------------|
-| CRUD Automóveis               | Cadastro, listagem, busca, edição e remoção de automóveis  |
-| CRUD Motoristas               | Cadastro, listagem, busca, edição e remoção de motoristas  |
-| Utilização de Automóveis      | Início/fim de uso, histórico, paginação, regras de negócio |
-| Health Check                  | Endpoint `/health` para monitoramento                      |
-| Rate Limiting                 | Proteção contra abuso de requisições                       |
-| Validação de Dados            | Validação robusta via express-validator                    |
-| Documentação OpenAPI/Swagger  | Especificação completa e playground interativo             |
-| Testes Unitários e Integração | Cobertura total com Jest e Supertest                       |
-| Deploy Docker e Render        | Pronto para produção e cloud                               |
-| Clean Code & SOLID            | Código limpo, modular, fácil de manter                     |
+| CRUD Automóveis               | Cadastro, listagem, busca, edição e remoção de automóveis.  |
+| CRUD Motoristas               | Cadastro, listagem, busca, edição e remoção de motoristas.  |
+| Utilização de Automóveis      | Início/fim de uso, histórico, paginação, regras de negócio. |
+| Health Check                  | Endpoint `/health` para monitoramento.                      |
+| Rate Limiting                 | Proteção contra abuso de requisições.                       |
+| Validação de Dados            | Validação robusta via express-validator.                    |
+| Documentação OpenAPI/Swagger  | Especificação completa e playground interativo.             |
+| Testes Unitários e Integração | Cobertura total com Jest e Supertest.                       |
+| Deploy Docker e Render        | Pronto para produção e cloud.                               |
+| Clean Code & SOLID            | Código limpo, modular, fácil de manter.                     |
 
 ---
 
@@ -143,6 +144,8 @@ controle/
 ├── package.json, .env, etc.
 ```
 
+> **Sugestão:** Adicione um diagrama de arquitetura para ilustrar o fluxo do sistema. Pode ser um link para um arquivo .png/.svg ou ferramenta online (Excalidraw, Lucidchart, etc).
+
 ---
 
 ## ⚡ Instalação
@@ -156,8 +159,8 @@ controle/
 ### Instalação Local
 
 ```bash
-git clone https://github.com/devferreirag/Saidor.git
-cd Saidor/controle
+git clone https://github.com/FuturoDevJunior/SEIDOR_RH.git
+cd SEIDOR_RH
 npm install
 cp .env.example .env # Ajuste as variáveis se necessário
 ```
@@ -176,6 +179,14 @@ docker build -t controle-automoveis-api .
 docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
 ```
 
+### Testes
+
+Após instalar as dependências, execute:
+
+```bash
+npm test
+```
+
 ---
 
 ## 🧪 Testes & Cobertura
@@ -183,8 +194,8 @@ docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
 - **Testes unitários e integração:**  
   `npm test`
 - **Cobertura de testes:**  
-  `npm run coverage` (relatório local em `coverage/lcov-report/index.html`)
-- **Frameworks:** Jest, Supertest
+  `npm run coverage` (relatório local em `coverage/lcov-report/index.html`).
+- **Frameworks:** Jest, Supertest.
 
 ---
 
@@ -197,20 +208,70 @@ docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
 
 ### Endpoints Principais
 
-- `GET /health` — Health check
-- `POST /api/automoveis` — Criar automóvel
-- `GET /api/automoveis` — Listar automóveis
-- `GET /api/automoveis/:id` — Buscar automóvel
-- `PUT /api/automoveis/:id` — Atualizar automóvel
-- `DELETE /api/automoveis/:id` — Remover automóvel
-- `POST /api/motoristas` — Criar motorista
-- `GET /api/motoristas` — Listar motoristas
-- `GET /api/motoristas/:id` — Buscar motorista
-- `PUT /api/motoristas/:id` — Atualizar motorista
-- `DELETE /api/motoristas/:id` — Remover motorista
-- `POST /api/utilizacoes` — Iniciar utilização
-- `PATCH /api/utilizacoes/:id/finalizar` — Finalizar utilização
-- `GET /api/utilizacoes` — Listar utilizações (paginação)
+- `GET /health` — Health check.
+- `POST /api/automoveis` — Criar automóvel.
+- `GET /api/automoveis` — Listar automóveis.
+- `GET /api/automoveis/:id` — Buscar automóvel.
+- `PUT /api/automoveis/:id` — Atualizar automóvel.
+- `DELETE /api/automoveis/:id` — Remover automóvel.
+- `POST /api/motoristas` — Criar motorista.
+- `GET /api/motoristas` — Listar motoristas.
+- `GET /api/motoristas/:id` — Buscar motorista.
+- `PUT /api/motoristas/:id` — Atualizar motorista.
+- `DELETE /api/motoristas/:id` — Remover motorista.
+- `POST /api/utilizacoes` — Iniciar utilização.
+- `PATCH /api/utilizacoes/:id/finalizar` — Finalizar utilização.
+- `GET /api/utilizacoes` — Listar utilizações (paginação).
+
+---
+
+## 📦 Exemplos de Uso
+
+### Criar Automóvel
+
+```bash
+curl -X POST https://seidor-rh.onrender.com/api/automoveis \
+  -H 'Content-Type: application/json' \
+  -d '{"placa": "ABC-1234", "cor": "Azul", "marca": "MarcaXYZ"}'
+```
+
+**Resposta:**
+```json
+{
+  "id": "gerado-pelo-uuid",
+  "placa": "ABC-1234",
+  "cor": "Azul",
+  "marca": "MarcaXYZ"
+}
+```
+
+### Listar Utilizações (com paginação)
+
+```bash
+curl "https://seidor-rh.onrender.com/api/utilizacoes?page=1&limit=10"
+```
+
+**Resposta:**
+```json
+{
+  "items": [
+    {
+      "id": "uuid-da-utilizacao",
+      "motoristaId": "uuid-do-motorista",
+      "automovelId": "uuid-do-automovel",
+      "dataInicio": "2024-07-31T12:00:00.000Z",
+      "dataFim": null,
+      "motivoUtilizacao": "Viagem a serviço",
+      "motorista": { "id": "uuid-do-motorista", "nome": "Nome do Motorista" },
+      "automovel": { "id": "uuid-do-automovel", "placa": "ABC-1234", "marca": "Marca", "cor": "Cor" }
+    }
+  ],
+  "totalItems": 1,
+  "totalPages": 1,
+  "currentPage": 1,
+  "itemsPerPage": 10
+}
+```
 
 ---
 
@@ -219,13 +280,13 @@ docker run -p 3000:3000 -e PORT=3000 controle-automoveis-api
 Sinta-se à vontade para contribuir!  
 Siga os passos:
 
-1. Fork este repositório
-2. Crie uma branch: `git checkout -b feature/NovaFeature`
-3. Commit suas alterações: `git commit -m 'feat: Nova feature'`
-4. Push para sua branch: `git push origin feature/NovaFeature`
-5. Abra um Pull Request
+1. Fork este repositório.
+2. Crie uma branch: `git checkout -b feature/NovaFeature`.
+3. Commit suas alterações: `git commit -m 'feat: Nova feature'`.
+4. Push para sua branch: `git push origin feature/NovaFeature`.
+5. Abra um Pull Request.
 
-Sugestões, dúvidas ou bugs? [Abra uma issue](https://github.com/devferreirag/Saidor/issues)!
+Sugestões, dúvidas ou bugs? [Abra uma issue](https://github.com/FuturoDevJunior/SEIDOR_RH/issues)!
 
 Consulte o [CONTRIBUTING.md](./CONTRIBUTING.md) para mais detalhes.
 
@@ -256,7 +317,7 @@ Veja o campo "license" do [`package.json`](./package.json) para mais informaçõ
 
 ## 👤 Contato
 
-Desenvolvido por [Gabriel Ferreira](https://linkedin.com/in/devferreirag)  
+Desenvolvido por [Gabriel Ferreira](https://linkedin.com/in/devferreirag).  
 Agradecimentos especiais a todos os contribuidores, à comunidade Node.js e aos mantenedores de ferramentas open source!
 
 <p align="center">
